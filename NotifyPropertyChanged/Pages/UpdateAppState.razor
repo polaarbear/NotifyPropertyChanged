@@ -1,0 +1,39 @@
+﻿@page "/updatestate"
+@using NotifyPropertyChanged.Services;
+@using System.ComponentModel;
+
+<h3>UpdateAppState</h3>
+
+
+<div><strong>String Value:</strong>&nbsp;@_AppState.ChangeableString</div>
+<br />
+<input @bind-value="updateValue" type="text" />
+<button @onclick="UpdateText">Update String</button>
+
+@code {
+    [Inject]
+    private AppState _AppState { get; set; }
+
+    private string updateValue { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        if(_AppState != null)
+        {
+            _AppState.PropertyChanged += CheckPropertyChanged;
+        }
+    }
+
+    private void CheckPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if(e.PropertyName == nameof(_AppState.ChangeableString))
+        {
+            StateHasChanged();
+        }
+    }
+
+    private void UpdateText() {
+        _AppState.ChangeableString = updateValue;
+        updateValue = "";
+    }
+}
